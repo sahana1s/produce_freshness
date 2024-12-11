@@ -24,7 +24,7 @@ if page == "Freshness Detection":
     @st.cache_resource
     def load_freshness_model():
         from ultralytics import YOLO
-        return YOLO("best.pt")  # Replace with your YOLO model path
+        return YOLO("best.pt") 
 
     model = load_freshness_model()
 
