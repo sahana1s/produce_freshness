@@ -1,0 +1,5 @@
+opencv-python
+pandas
+numpy
+streamlit
+ultralytics==8.3.40
