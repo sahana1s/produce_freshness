@@ -5,7 +5,7 @@ from collections import Counter
 from datetime import datetime
 import streamlit as st
 
-# Define a multipage app
+# Sidebar Navigation
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Choose a page:", ["Freshness Detection", "Processed Products"])
 
@@ -17,6 +17,37 @@ if 'freshness_data' not in st.session_state:
 def get_timestamp():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+# Define a style for the app
+st.markdown(
+    """
+    <style>
+    .main {
+        background-color: #f4f4f4;
+        font-family: Arial, sans-serif;
+    }
+    .sidebar .sidebar-content {
+        background-color: #f0f0f0;
+    }
+    h1, h2, h3, h4 {
+        color: #4a4a4a;
+    }
+    .stButton > button {
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 5px;
+        border: none;
+        padding: 8px 16px;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+    .stButton > button:hover {
+        background-color: #45a049;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # Freshness Detection Page
 if page == "Freshness Detection":
     st.title("Freshness Detection")
@@ -24,7 +55,7 @@ if page == "Freshness Detection":
     @st.cache_resource
     def load_freshness_model():
         from ultralytics import YOLO
-        return YOLO("best.pt")  
+        return YOLO("best.pt")  # Replace with your model path
 
     model = load_freshness_model()
 
@@ -69,8 +100,19 @@ if page == "Freshness Detection":
 elif page == "Processed Products":
     st.title("Processed Products")
 
-    st.write("### Freshness Detection Data")
-    st.dataframe(pd.DataFrame(st.session_state.freshness_data).style.set_table_styles([{
-        "selector": "table",
-        "props": [("overflow-x", "scroll")]
-    }]))
+    if st.session_state.freshness_data:
+        st.write("### Freshness Detection Data")
+        df = pd.DataFrame(st.session_state.freshness_data)
+        st.dataframe(
+            df.style.set_properties(
+                **{'text-align': 'left', 'font-family': 'Arial', 'color': '#333'}
+            ).set_table_styles(
+                [{
+                    'selector': 'thead th',
+                    'props': [('background-color', '#f0f0f0'), ('color', '#333')]
+                }]
+            ),
+            height=400
+        )
+    else:
+        st.info("No data available.")
